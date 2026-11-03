@@ -1,0 +1,21 @@
+# LifeLite 统一编辑器配置
+# https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+# Markdown 里的行尾空格有时是语义（强制换行），不自动删除
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+
+[Makefile]
+indent_style = tab

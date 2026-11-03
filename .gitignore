@@ -1,0 +1,32 @@
+# 依赖与构建产物：本项目零依赖零构建，正常情况下这些目录不应存在
+node_modules/
+dist/
+build/
+
+# 编辑器与 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志与临时文件
+*.log
+npm-debug.log*
+.DS_Store?
+._*
+tmp/
+.tmp/
+*.bak
+
+# 本地导出的备份数据（别把个人隐私提交上去）
+lifelite-backup-*.json
+
+# Python 缓存（tools/make-icons.py 用）
+__pycache__/
+*.py[cod]
