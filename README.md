@@ -9,8 +9,27 @@
 
 ---
 
+## 界面预览
+
+截图来自真实 Chrome 渲染，使用示例数据，存放在 [`docs/screenshots/`](docs/screenshots/)。
+
+| 桌面 1440px | 手机 480px |
+| --- | --- |
+| ![桌面端：目标列表与统计](docs/screenshots/desktop-1440.png) | ![手机端：单栏布局](docs/screenshots/mobile-480.png) |
+
+选中目标后右侧展开任务列表，优先级、预计时长、经验值、截止时间一目了然：
+
+![任务列表](docs/screenshots/tasks-with-data.png)
+
+新建与编辑都走原生 `<dialog>`，颜色标签直接点选：
+
+![新建目标对话框](docs/screenshots/dialog-goal.png)
+
+---
+
 ## 目录
 
+- [界面预览](#界面预览)
 - [功能特性](#功能特性)
 - [快速开始](#快速开始)
 - [部署到 GitHub Pages](#部署到-github-pages)
@@ -101,10 +120,12 @@ lifelite/
 │   ├── wukan-sanding.md       # 五看三定：产品定位与范围取舍
 │   ├── data-schema.md         # localStorage 键、字段、导入导出格式
 │   ├── design-decisions.md    # 设计决策记录（为什么这么做）
-│   └── wireframe.svg          # 桌面端界面草图
+│   ├── wireframe.svg          # 桌面端界面草图
+│   └── screenshots/           # 真实浏览器截图（README 预览用）
 ├── tests/
 │   ├── logic-test.js          # 零依赖 Node 自测：计算与规则类逻辑
 │   ├── static-check.js        # 连线检查：id / 资源引用 / 脚本顺序 / 体积
+│   ├── browser-check.js       # 可选：真实 Chrome 验收（响应式 / 离线 / 双击）并生成截图
 │   └── manual-checklist.md    # 手工验收清单（15 条主验收 + 补充自测）
 ├── tools/
 │   └── make-icons.py          # 开发期一次性脚本：重新生成图标
@@ -151,6 +172,17 @@ node tests/static-check.js      # 静态一致性检查：id、资源引用、�
 
 **交互与视觉**按 [`tests/manual-checklist.md`](tests/manual-checklist.md) 手工验收，至少覆盖 480 / 1024 / 1440 三个宽度。
 
+如果本机装了 Chrome / Edge，还可以跑一遍真实浏览器验收（可选，需要一次性安装浏览器驱动）：
+
+```bash
+npm i puppeteer-core --no-save      # 只装测试驱动，不会进入应用
+node tests/browser-check.js         # 自动验证响应式、交互、离线、双击场景
+```
+
+`tests/browser-check.js` 会自己起一个临时静态服务器，在真实 Chrome 里检查 375–1440 五个宽度无横向滚动、
+完成任务的加经验链路、快捷键、删除撤销、Service Worker 断网可用，以及 `file://` 双击启动；
+同时把截图写到 `docs/screenshots/`。
+
 **重新生成图标**（可选，需要 Pillow）：
 
 ```bash
@@ -185,7 +217,7 @@ python tools/make-icons.py
 - **数据只在这台浏览器里**：换设备或清理浏览器数据需要手动「导出 / 导入」JSON。这是「无账号」的直接代价。
 - **日期按本机时间计算**：手动修改系统时间、跨时区旅行时「今天」可能跳变，打卡与连续天数不做特殊处理。
 - **存在刷经验漏洞**：建任务 → 完成 → 删除，经验不会回收。这是「只加不减」的刻意取舍，目标产品不是反作弊。
-- **`file://` 下无 Service Worker**：双击打开时无法「安装到桌面」，离线与安装能力需要静态服务器或 GitHub Pages。
+- **`file://` 下无 Service Worker**：双击打开时无法「安装到桌面」，离线与安装能力需要静态服务器或 GitHub Pages。浏览器控制台还会出现一条 `manifest.json` 被 CORS 拒绝的警告，这是预期噪音，不影响使用。
 - **深色模式未实现**：方案中列为可选项，本版本不做。
 - **超大数据量**：`localStorage` 单域约 5 MB，几千条目标/任务以内没问题，超出时写入会失败并提示。
 

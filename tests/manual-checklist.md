@@ -83,3 +83,17 @@
 ```text
 
 ```
+
+---
+
+## 六、已跑过的自动化验证（2026-11-04）
+
+供验收时对照，重跑命令见 [`README.md`](../README.md#本地开发与测试)。
+
+| 脚本 | 结果 | 覆盖 |
+| --- | --- | --- |
+| `node tests/logic-test.js` | 111 项断言全部通过 | 经验等级公式、排序、幂等、级联删除、连签、导入校验、统计口径 |
+| `node tests/static-check.js` | 通过，首屏 145.1 KB | 55 个 id 引用、11 个资源、脚本顺序、APP_SHELL 覆盖、体积 |
+| `node tests/browser-check.js` | 19 项全部通过 | 375/480/768/1024/1440 无横向滚动、加经验链路、快捷键、撤销、SW 断网、`file://` 双击 |
+
+截图存放在 [`docs/screenshots/`](../docs/screenshots/)：桌面、平板、手机、任务列表、完成 Toast、新建目标对话框。
