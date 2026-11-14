@@ -131,7 +131,7 @@ a {
   position: absolute;
   inset: 0;
   perspective: 2400px;
-  perspective-origin: 0% 50%;
+  perspective-origin: 100% 50%;
   border-radius: 4px 12px 12px 4px;
 }
 
@@ -972,18 +972,18 @@ a {
   inset: 0;
   z-index: 20;
   border-radius: 3px 10px 10px 3px;
-  transform-origin: right center;
+  transform-origin: left center;
   backface-visibility: hidden;
   pointer-events: none;
   overflow: hidden;
 }
 
 .flip.is-forward {
-  animation: page-forward 0.66s cubic-bezier(0.42, 0.02, 0.28, 1) forwards;
+  animation: page-forward 0.58s cubic-bezier(0.42, 0.02, 0.28, 1) forwards;
 }
 
 .flip.is-backward {
-  animation: page-backward 0.66s cubic-bezier(0.42, 0.02, 0.28, 1) forwards;
+  animation: page-backward 0.58s cubic-bezier(0.42, 0.02, 0.28, 1) forwards;
 }
 
 @keyframes page-forward {
@@ -995,14 +995,14 @@ a {
     filter: brightness(0.94);
   }
   100% {
-    transform: rotateY(-176deg);
+    transform: rotateY(176deg);
     filter: brightness(1.04);
   }
 }
 
 @keyframes page-backward {
   0% {
-    transform: rotateY(-176deg);
+    transform: rotateY(176deg);
     filter: brightness(1.04);
   }
   65% {
@@ -1019,7 +1019,7 @@ a {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(60, 40, 20, 0.18), rgba(60, 40, 20, 0) 55%);
+  background: linear-gradient(to right, rgba(60, 40, 20, 0.26), rgba(60, 40, 20, 0) 46%);
   opacity: 0.9;
   pointer-events: none;
 }

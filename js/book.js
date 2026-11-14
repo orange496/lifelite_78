@@ -18,7 +18,7 @@
 
   /** 每页固定的横线数量 */
   const ROWS = 14;
-  const FLIP_MS = 680;
+  const FLIP_MS = 600;
 
   const state = {
     page: 0, // 0 = 封面，1 = 扉页，>=2 = 任务页

@@ -16,7 +16,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'lifelite-v2';
+const CACHE_VERSION = 'lifelite-v3';
 const CACHE_NAME = CACHE_VERSION;
 
 /* 应用外壳：只要这些文件在，断网也能完整使用 */
@@ -42,7 +42,16 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
+      .then((cache) =>
+        Promise.all(
+          APP_SHELL.map((url) =>
+            fetch(url, { cache: 'reload' }).then((response) => {
+              if (!response.ok) throw new Error('预缓存失败：' + url);
+              return cache.put(url, response);
+            })
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   );
 });
