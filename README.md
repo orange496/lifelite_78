@@ -125,18 +125,9 @@ lifelite/
 
 Chrome / Edge / Firefox / Safari 最近两个大版本。依赖 `<dialog>`、CSS Grid、`localStorage` 与 Service Worker（`file://` 下自动跳过 SW）。
 
-## 已知问题
-
-- **数据只在当前浏览器**：换设备需要手动导出 / 导入 JSON。
-- **移动端不做独立版式**：窄屏整体等比缩小，触屏翻页手势未实现。
-- **日期按本机时间**：修改系统时间会让「今天」跳变，跨时区不做特殊处理。
-- **升级奖励是占位**：扉页的「待揭晓」卡片还没有具体奖励内容。
-- **`file://` 无 Service Worker**：控制台会出现 manifest 的 CORS 警告，属预期噪音。
-- **存在刷经验漏洞**：见「设计取舍」。
-
 ## 贡献
 
-提交 Issue 或 PR 前，请先阅读 README 的「设计取舍」与「已知问题」，并遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。PR 模板里列出了提交前的自检项。
+提交 Issue 或 PR 前，请先阅读 README 的「设计取舍」，并遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。PR 模板里列出了提交前的自检项。
 
 ## 版本记录
 
