@@ -1,4 +1,4 @@
-# LifeLite · 学习目标记事本
+﻿# LifeLite · 学习目标记事本
 
 橙色封面的翻页记事本：主任务逐行写在纸上，子任务缩进两字符跟在下面，点一下就能展开收起。
 经验、等级、打卡和升级奖励都在扉页，翻页时有纸张的质感——**双击 `index.html` 就能用**。
@@ -105,7 +105,6 @@ lifelite/
 │   ├── wukan-sanding.md
 │   ├── data-schema.md
 │   ├── design-decisions.md
-│   ├── wireframe.svg          # 旧版卡片布局草图（历史资料）
 │   └── screenshots/           # notebook-*.png 为当前界面截图
 ├── tests/
 │   ├── logic-test.js          # 计算与规则自测
@@ -176,3 +175,4 @@ node tests/browser-check.js     # 23 项：翻页、展开、缩进、菜单、�
 ## 许可证
 
 [MIT](LICENSE) © 2026 LifeLite Team
+
