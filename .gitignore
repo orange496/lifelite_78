@@ -30,3 +30,11 @@ lifelite-backup-*.json
 # Python 缓存（tools/make-icons.py 用）
 __pycache__/
 *.py[cod]
+
+# 按课程作业范围：仓库只保留运行所需的成品代码与协作配置
+# 以下为本地开发资料，不随仓库分发
+docs/
+tests/
+tools/
+*.docx
+_report_build.py

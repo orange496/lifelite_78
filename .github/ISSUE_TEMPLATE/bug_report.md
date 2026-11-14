@@ -20,7 +20,7 @@ assignees: ""
 
 ## 期望结果
 
-<!-- 按设计应该发生什么？可引用 README / data-schema / manual-checklist 里的条目。 -->
+<!-- 按设计应该发生什么？可引用 README 的功能说明或「设计取舍」一节。 -->
 
 ## 实际结果
 

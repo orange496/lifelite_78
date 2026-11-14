@@ -8,7 +8,7 @@ assignees: ""
 
 ## 位置
 
-<!-- 具体到文件和章节，例如 `docs/data-schema.md` 的「四、Checkins」、`README.md` 的「已知问题」。有行号更好。 -->
+<!-- 具体到文件和章节，例如 `README.md` 的「已知问题」、`CHANGELOG.md` 的某条记录。有行号更好。 -->
 
 ## 问题
 
