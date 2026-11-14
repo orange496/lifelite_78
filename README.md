@@ -71,7 +71,6 @@ lifelite/
 ├── .github/                   # Issue 模板与 PR 模板
 ├── CHANGELOG.md               # 版本记录
 ├── CODE_OF_CONDUCT.md         # 社区行为准则
-├── CONTRIBUTING.md            # 协作规范
 ├── LICENSE                    # MIT
 └── README.md
 ```
@@ -137,7 +136,7 @@ Chrome / Edge / Firefox / Safari 最近两个大版本。依赖 `<dialog>`、CSS
 
 ## 贡献
 
-分支模型、提交信息、Issue / PR 流程与冲突演练见 [CONTRIBUTING.md](CONTRIBUTING.md)；参与前请阅读 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+提交 Issue 或 PR 前，请先阅读 README 的「设计取舍」与「已知问题」，并遵守 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。PR 模板里列出了提交前的自检项。
 
 ## 版本记录
 

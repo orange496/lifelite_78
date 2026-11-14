@@ -17,7 +17,7 @@ Closes #
 
 ## 检查清单
 
-提交前请逐项确认（详见 [`CONTRIBUTING.md`](../CONTRIBUTING.md)）：
+提交前请逐项确认：
 
 - [ ] 已基于最新的 `develop` 变基，无冲突
 - [ ] 只做了一件事，改动规模合理
