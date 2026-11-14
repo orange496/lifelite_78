@@ -16,7 +16,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'lifelite-v1';
+const CACHE_VERSION = 'lifelite-v2';
 const CACHE_NAME = CACHE_VERSION;
 
 /* 应用外壳：只要这些文件在，断网也能完整使用 */
@@ -29,6 +29,7 @@ const APP_SHELL = [
   './js/goals.js',
   './js/tasks.js',
   './js/stats.js',
+  './js/book.js',
   './js/app.js',
   './manifest.json',
   './icons/icon-192.png',

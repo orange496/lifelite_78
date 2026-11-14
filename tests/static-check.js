@@ -101,6 +101,7 @@ const expectedOrder = [
   'js/goals.js',
   'js/tasks.js',
   'js/stats.js',
+  'js/book.js',
   'js/app.js'
 ];
 if (scriptOrder.join(',') !== expectedOrder.join(',')) {
@@ -153,36 +154,57 @@ const requiredClasses = [
   'toast-text',
   'toast-action',
   'toast-detail',
-  'goal-card',
-  'goal-desc',
-  'goal-meta',
-  'goal-name',
-  'goal-card-actions',
-  'progress',
-  'progress-fill',
-  'is-empty',
-  'task-row',
-  'task-check',
-  'task-main',
-  'task-title',
-  'task-meta',
-  'chip',
-  'task-actions',
-  'empty',
-  'empty-title',
-  'task-group-label',
-  'task-group-toggle',
-  'trend-day',
-  'trend-bar',
-  'trend-label',
-  'heat-cell'
+  'sheet',
+  'sheet--cover',
+  'sheet--ruled',
+  'cover',
+  'cover-title',
+  'cover-btn',
+  'line',
+  'line--goal',
+  'line--sub',
+  'line-toggle',
+  'line-index',
+  'line-color',
+  'line-check',
+  'line-title',
+  'line-meta',
+  'line-more',
+  'line-add-btn',
+  'line-empty',
+  'line-menu',
+  'menu-item',
+  'flip',
+  'front-level',
+  'front-bar',
+  'exp-track',
+  'exp-fill',
+  'front-stats',
+  'front-heat',
+  'heat-cell',
+  'front-checkin',
+  'btn-checkin',
+  'front-reward',
+  'reward-card',
+  'reward-placeholder',
+  'front-archive',
+  'front-note',
+  'archive-banner',
+  'book-nav',
+  'nav-btn',
+  'nav-page',
+  'is-checked',
+  'is-done',
+  'is-overdue',
+  'is-exp',
+  'is-blank'
 ];
 requiredClasses.forEach((name) => {
   if (css.indexOf('.' + name) < 0) fail('style.css 里找不到类名 .' + name + '（JS 渲染时在用）');
 });
 
 // 内联 HTML 里用到的 id 必须在 CSS/JS 之外没有拼写偏差（抽查关键 id 命名规范）
-['level-name', 'level-exp', 'exp-fill', 'btn-checkin', 'goal-list', 'task-list'].forEach((id) => {
+['sheet', 'flip', 'page-indicator', 'btn-prev', 'btn-next', 'line-menu'].forEach((id) => {
   if (!htmlIds.has(id)) fail('index.html 缺少关键元素 #' + id);
 });
 
@@ -195,6 +217,7 @@ const sizeFiles = [
   'js/goals.js',
   'js/tasks.js',
   'js/stats.js',
+  'js/book.js',
   'js/app.js',
   'manifest.json',
   'icons/icon-192.png'

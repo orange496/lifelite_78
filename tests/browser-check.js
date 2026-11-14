@@ -1,14 +1,13 @@
 /*
  * 真实浏览器验收脚本（可选，需要 Node 18+ 与本机 Chrome/Edge）
  *
- * 用途：在真实 Chrome 里跑响应式、交互、Service Worker 离线与 file:// 双击场景，
- * 并顺便生成 docs/screenshots/ 下的截图。它不参与应用运行，应用本身依然零依赖。
+ * 用途：在真实 Chrome 里检查记事本界面：封面 / 扉页 / 任务页、展开子任务、
+ * 完成加经验、翻页动画、行内菜单、归档箱、断网可用与 file:// 双击启动，
+ * 并顺便生成 docs/screenshots/ 下的截图。它不参与应用运行，应用本身零依赖。
  *
  * 准备：
- *   npm i puppeteer-core --no-save     # 只装测试用的浏览器驱动
- *   node tests/browser-check.js        # 可用 CHROME_PATH 指定浏览器
- *
- * 说明：脚本会自己起一个本地静态服务器（随机端口），结束后关闭。
+ *   npm i puppeteer-core --no-save
+ *   node tests/browser-check.js          # 可用 CHROME_PATH 指定浏览器
  */
 'use strict';
 
@@ -54,7 +53,6 @@ function startServer() {
   });
 }
 
-// 示例数据：3 个目标、6 个任务、近 10 天打卡。日期全部相对「今天」生成。
 function demoDataScript() {
   const pad = (n) => (n < 10 ? '0' + n : '' + n);
   const day = (offset) => {
@@ -68,29 +66,26 @@ function demoDataScript() {
     return d.toISOString();
   };
   const goals = [
-    { id: 'g_demo0001', title: '通过大学英语六级', desc: '每天 30 分钟听力，周末集中做套题。', due: day(46), color: 'green', status: 'active', createdAt: iso(-6) },
-    { id: 'g_demo0002', title: '完成开源文化期末项目', desc: '把 LifeLite 交付到 GitHub，并准备好演示。', due: day(4), color: 'violet', status: 'active', createdAt: iso(-5) },
-    { id: 'g_demo0003', title: '每周跑三次步', desc: '不追求配速，先把频率稳住。', due: '', color: 'amber', status: 'active', createdAt: iso(-4) }
+    { id: 'g_1', title: '通过大学英语六级', desc: '每天 30 分钟听力。', due: day(46), color: 'green', status: 'active', createdAt: iso(-6) },
+    { id: 'g_2', title: '完成开源文化期末项目', desc: '交付到 GitHub。', due: day(4), color: 'violet', status: 'active', createdAt: iso(-5) },
+    { id: 'g_3', title: '每周跑三次步', desc: '先稳住频率。', due: '', color: 'amber', status: 'active', createdAt: iso(-4) },
+    { id: 'g_4', title: '整理上学期的笔记', desc: '', due: day(-20), color: 'slate', status: 'archived', createdAt: iso(-40) }
   ];
   const tasks = [
-    { id: 't_demo0001', goalId: 'g_demo0001', title: '精听一套真题听力', priority: 'high', estimate: 60, due: day(-1) + 'T21:00', done: true, completedAt: iso(-1), createdAt: iso(-6) },
-    { id: 't_demo0002', goalId: 'g_demo0001', title: '背 50 个高频词', priority: 'medium', estimate: 30, due: day(0) + 'T22:00', done: false, completedAt: '', createdAt: iso(-3) },
-    { id: 't_demo0003', goalId: 'g_demo0001', title: '写两套模拟题', priority: 'high', estimate: 90, due: day(-2) + 'T20:00', done: false, completedAt: '', createdAt: iso(-2) },
-    { id: 't_demo0004', goalId: 'g_demo0002', title: '整理项目结构并写 README', priority: 'medium', estimate: 60, due: day(-1) + 'T18:00', done: true, completedAt: iso(-1), createdAt: iso(-5) },
-    { id: 't_demo0005', goalId: 'g_demo0002', title: '录制三分钟演示视频', priority: 'high', estimate: 60, due: day(3) + 'T20:00', done: false, completedAt: '', createdAt: iso(-2) },
-    { id: 't_demo0006', goalId: 'g_demo0002', title: '按验收清单自测一遍', priority: 'low', estimate: 30, due: day(2) + 'T12:00', done: false, completedAt: '', createdAt: iso(-1) }
+    { id: 't_1', goalId: 'g_1', title: '精听一套真题听力', priority: 'high', estimate: 60, due: day(-1) + 'T21:00', done: true, completedAt: iso(-1), createdAt: iso(-6) },
+    { id: 't_2', goalId: 'g_1', title: '背 50 个高频词', priority: 'medium', estimate: 30, due: day(0) + 'T22:00', done: false, completedAt: '', createdAt: iso(-3) },
+    { id: 't_3', goalId: 'g_1', title: '写两套模拟题', priority: 'high', estimate: 90, due: day(-2) + 'T20:00', done: false, completedAt: '', createdAt: iso(-2) },
+    { id: 't_4', goalId: 'g_2', title: '整理项目结构并写 README', priority: 'medium', estimate: 60, due: day(-1) + 'T18:00', done: true, completedAt: iso(-1), createdAt: iso(-5) },
+    { id: 't_5', goalId: 'g_2', title: '录制三分钟演示视频', priority: 'high', estimate: 60, due: day(3) + 'T20:00', done: false, completedAt: '', createdAt: iso(-2) },
+    { id: 't_6', goalId: 'g_2', title: '按验收清单自测一遍', priority: 'low', estimate: 30, due: day(2) + 'T12:00', done: false, completedAt: '', createdAt: iso(-1) },
+    { id: 't_7', goalId: 'g_3', title: '慢跑 30 分钟', priority: 'medium', estimate: 30, due: '', done: false, completedAt: '', createdAt: iso(-3) },
+    { id: 't_8', goalId: 'g_3', title: '拉伸 10 分钟', priority: 'low', estimate: 15, due: '', done: false, completedAt: '', createdAt: iso(-2) }
   ];
   const checkins = {};
   [-9, -8, -7, -6, -5, -4, -2, -1, 0].forEach((o) => { checkins[day(o)] = true; });
   const profile = {
-    exp: 265, level: 3, streak: 4, lastCheckin: day(0), streakBonusCount: 1,
-    expLog: [
-      { at: iso(-1), source: 'task', refId: 't_demo0001', amount: 20 },
-      { at: iso(-1), source: 'task', refId: 't_demo0004', amount: 20 },
-      { at: iso(-2), source: 'goal', refId: 'g_demo0000', amount: 50 },
-      { at: iso(-3), source: 'checkin', refId: day(-3), amount: 5 },
-      { at: iso(-7), source: 'streak', refId: day(-7), amount: 20 }
-    ]
+    exp: 265, level: 3, streak: 3, lastCheckin: day(0), streakBonusCount: 1,
+    expLog: [{ at: iso(-1), source: 'task', refId: 't_1', amount: 20 }]
   };
   return {
     'lifelite.goals': JSON.stringify(goals),
@@ -135,114 +130,145 @@ function findChrome() {
   const browser = await puppeteer.launch({
     executablePath,
     headless: 'new',
-    args: ['--no-sandbox', '--disable-gpu', '--force-prefers-reduced-motion', '--hide-scrollbars']
+    args: ['--no-sandbox', '--disable-gpu', '--hide-scrollbars']
   });
 
   const page = await browser.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push('console: ' + m.text()); });
+  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
 
-  await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await page.goto(BASE + 'index.html', { waitUntil: 'networkidle0' });
   await page.evaluate((data) => { Object.keys(data).forEach((k) => localStorage.setItem(k, data[k])); }, demoDataScript());
   await page.reload({ waitUntil: 'networkidle0' });
-  await page.waitForSelector('#goal-list .goal-card');
-  await new Promise((r) => setTimeout(r, 300));
-  // 默认选中有任务的目标，截图里能同时看到目标与任务列表。
-  await page.click('#goal-list .goal-card:nth-child(2)');
-  await new Promise((r) => setTimeout(r, 250));
+  await new Promise((r) => setTimeout(r, 400));
 
-  // 1. 三档及以上宽度：无横向滚动，并顺便截图
-  const shots = { 1440: 'desktop-1440.png', 1024: 'tablet-1024.png', 480: 'mobile-480.png' };
-  for (const width of [1440, 1024, 768, 480, 375]) {
-    await page.setViewport({ width, height: 1000, deviceScaleFactor: 1 });
-    await new Promise((r) => setTimeout(r, 200));
-    const m = await page.evaluate(() => {
-      const vw = window.innerWidth;
-      const overflow = [];
-      document.querySelectorAll('body *').forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.right > vw + 1 && r.width > 0 && getComputedStyle(el).position !== 'fixed' && overflow.length < 4) {
-          overflow.push(el.tagName.toLowerCase() + '@' + Math.round(r.right));
-        }
-      });
-      return { vw, scroll: document.documentElement.scrollWidth, overflow };
-    });
-    ok('宽度 ' + width + ' 无横向滚动', m.scroll <= m.vw, JSON.stringify(m));
-    if (shots[width]) {
-      await page.screenshot({ path: path.join(SHOTS, shots[width]) });
-    }
-  }
+  // 1. 封面
+  ok('封面已渲染', Boolean(await page.$('.sheet--cover')));
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-cover.png') });
 
-  // 2. 交互：切换目标、完成任务加经验
-  await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
-  await new Promise((r) => setTimeout(r, 200));
-  await page.click('#goal-list .goal-card:nth-child(2)');
-  await new Promise((r) => setTimeout(r, 250));
-  const header = await page.$eval('#selected-goal-title', (n) => n.textContent.trim());
-  ok('切换目标后任务区标题更新', header === '完成开源文化期末项目', header);
-  await page.screenshot({ path: path.join(SHOTS, 'tasks-with-data.png') });
+  // 2. 扉页
+  await page.click('#btn-next');
+  await new Promise((r) => setTimeout(r, 900));
+  const front = await page.evaluate(() => ({
+    level: document.querySelector('.front-level') ? document.querySelector('.front-level').textContent.trim() : '',
+    reward: Boolean(document.querySelector('.reward-placeholder')),
+    indicator: document.getElementById('page-indicator').textContent.trim()
+  }));
+  ok('扉页显示等级与经验', front.level.indexOf('Lv.3') >= 0, JSON.stringify(front));
+  ok('扉页有升级奖励占位', front.reward);
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-front.png') });
 
-  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.profile')).exp);
-  await page.click('#task-list .task-row:not(.is-done) .task-check');
-  await new Promise((r) => setTimeout(r, 250));
-  const after = await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.profile')).exp);
-  ok('完成任务后经验增加', after > before, before + ' -> ' + after);
-  const toast = await page.evaluate(() => {
-    const all = document.querySelectorAll('#toasts .toast-text');
-    return all.length ? all[all.length - 1].textContent.trim() : '';
+  // 3. 任务页与展开
+  await page.click('#btn-next');
+  await new Promise((r) => setTimeout(r, 900));
+  const collapsed = await page.evaluate(() => ({
+    goals: document.querySelectorAll('.line--goal').length,
+    subs: document.querySelectorAll('.line--sub').length,
+    lines: document.querySelectorAll('.sheet-body > .line').length
+  }));
+  ok('任务页有 3 个主任务', collapsed.goals === 3, JSON.stringify(collapsed));
+  ok('每页固定 14 行', collapsed.lines === 14, String(collapsed.lines));
+  ok('默认收起子任务', collapsed.subs === 0);
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-tasks.png') });
+
+  await page.click('.line--goal[data-goal-id="g_1"]');
+  await new Promise((r) => setTimeout(r, 350));
+  const expanded = await page.evaluate(() => ({
+    subs: document.querySelectorAll('.line--sub').length,
+    pressed: document.querySelector('.line--goal[data-goal-id="g_1"]').getAttribute('aria-expanded')
+  }));
+  ok('点击主任务展开子任务', expanded.subs === 3 && expanded.pressed === 'true', JSON.stringify(expanded));
+  const indent = await page.evaluate(() => {
+    const goalTitle = document.querySelector('.line--goal[data-goal-id="g_1"] .line-title').getBoundingClientRect().left;
+    const subTitle = document.querySelector('.line--sub .line-title').getBoundingClientRect().left;
+    return Math.round(subTitle - goalTitle);
   });
-  ok('完成 Toast 文案正确', /^任务完成，\+\d+ 经验。$/.test(toast), toast);
-  await page.screenshot({ path: path.join(SHOTS, 'task-done-toast.png') });
+  ok('子任务首行缩进约两字符', indent >= 24 && indent <= 40, indent + 'px');
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-expanded.png') });
 
-  // 3. 快捷键与对话框
-  await page.keyboard.press('n');
-  await new Promise((r) => setTimeout(r, 250));
-  ok('快捷键 N 打开新建目标', await page.$eval('#goal-dialog', (d) => d.open));
-  await page.type('#goal-title', '准备下周的组会分享');
-  await page.screenshot({ path: path.join(SHOTS, 'dialog-goal.png') });
-  await page.keyboard.press('Escape');
+  // 4. 完成子任务加经验
+  const expBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.profile')).exp);
+  await page.click('.line--sub .line-check');
+  await new Promise((r) => setTimeout(r, 400));
+  const expAfter = await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.profile')).exp);
+  ok('完成子任务后经验增加', expAfter > expBefore, expBefore + ' -> ' + expAfter);
+
+  // 5. 行内菜单
+  await page.click('.line--goal .line-more');
   await new Promise((r) => setTimeout(r, 200));
-  ok('Esc 关闭对话框', !(await page.$eval('#goal-dialog', (d) => d.open)));
-  ok('取消后没有写入数据', (await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.goals')).length)) === 3);
+  ok('行尾菜单打开', await page.evaluate(() => !document.getElementById('line-menu').hidden));
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-menu.png') });
+  await page.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('.menu-item')).find((b) => b.textContent.indexOf('子任务') >= 0);
+    if (btn) btn.click();
+  });
+  await new Promise((r) => setTimeout(r, 300));
+  ok('菜单可打开子任务对话框', await page.evaluate(() => document.getElementById('task-dialog').open));
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-dialog.png') });
+  await page.keyboard.press('Escape');
 
-  // 4. 删除确认 + 10 秒撤销
-  await page.click('#task-list .task-row:not(.is-done) [data-act="delete"]');
-  await new Promise((r) => setTimeout(r, 250));
-  ok('删除任务弹出确认框', await page.$eval('#confirm-dialog', (d) => d.open));
-  await page.click('#confirm-ok');
-  await new Promise((r) => setTimeout(r, 250));
-  const undo = await page.$('#toasts .toast-action');
-  ok('删除后出现撤销按钮', Boolean(undo));
-  if (undo) {
-    await undo.click();
-    await new Promise((r) => setTimeout(r, 250));
+  // 6. 翻页动画
+  await page.click('#btn-prev');
+  await new Promise((r) => setTimeout(r, 900));
+  await page.click('#btn-next');
+  await new Promise((r) => setTimeout(r, 140));
+  const flip = await page.evaluate(() => {
+    const el = document.getElementById('flip');
+    return { cls: el.className, hasContent: el.innerHTML.length > 0 };
+  });
+  ok('翻页动画在播', flip.cls.indexOf('is-') >= 0 && flip.hasContent, JSON.stringify(flip));
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-flip.png') });
+  await new Promise((r) => setTimeout(r, 800));
+
+  // 7. 归档箱
+  await page.click('#btn-prev');
+  await new Promise((r) => setTimeout(r, 900));
+  await page.click('.archive-link');
+  await new Promise((r) => setTimeout(r, 400));
+  const archive = await page.evaluate(() => ({
+    banner: Boolean(document.querySelector('.archive-banner')),
+    goals: document.querySelectorAll('.line--goal').length
+  }));
+  ok('归档箱显示归档主任务', archive.banner && archive.goals === 1, JSON.stringify(archive));
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-archive.png') });
+  await page.evaluate(() => {
+    const back = Array.from(document.querySelectorAll('[data-act="archive-mode"]'))[0];
+    if (back) back.click();
+  });
+  await new Promise((r) => setTimeout(r, 300));
+
+  // 8. 多宽度无横向溢出
+  for (const width of [1440, 1024, 768, 480, 375]) {
+    await page.setViewport({ width, height: 900, deviceScaleFactor: 1 });
+    await new Promise((r) => setTimeout(r, 200));
+    const m = await page.evaluate(() => ({ vw: window.innerWidth, scroll: document.documentElement.scrollWidth }));
+    ok('宽度 ' + width + ' 无横向滚动', m.scroll <= m.vw, JSON.stringify(m));
   }
-  ok('撤销后任务恢复', (await page.evaluate(() => JSON.parse(localStorage.getItem('lifelite.tasks')).length)) === 6);
 
-  // 5. Service Worker 与离线
+  // 9. Service Worker 与离线
+  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
   await page.evaluate(async () => { if (navigator.serviceWorker) { await navigator.serviceWorker.ready; } });
   await page.reload({ waitUntil: 'networkidle0' });
   ok('Service Worker 已接管页面', await page.evaluate(() => Boolean(navigator.serviceWorker.controller)));
   await page.setOfflineMode(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
   await new Promise((r) => setTimeout(r, 600));
-  const offlineCards = await page.evaluate(() => document.querySelectorAll('#goal-list .goal-card').length);
-  ok('断网后仍能打开', offlineCards === 3, '卡片数 ' + offlineCards);
+  const offline = await page.evaluate(() => ({
+    goals: document.querySelectorAll('.line--goal').length,
+    front: Boolean(document.querySelector('.sheet--cover'))
+  }));
+  ok('断网后仍能打开', offline.front || offline.goals > 0, JSON.stringify(offline));
   await page.setOfflineMode(false);
 
-  // 6. file:// 双击场景。manifest.json 在 file:// 下会被 CORS 拒绝，这是预期内的控制台噪音。
+  // 10. file:// 双击
   const filePage = await browser.newPage();
   const fileErrors = [];
   filePage.on('pageerror', (e) => fileErrors.push(String(e)));
   await filePage.goto('file:///' + path.join(ROOT, 'index.html').replace(/\\/g, '/'), { waitUntil: 'domcontentloaded' });
   await new Promise((r) => setTimeout(r, 700));
-  const fileState = await filePage.evaluate(() => ({
-    level: document.querySelector('#level-name') ? document.querySelector('#level-name').textContent.trim() : '',
-    empty: document.querySelector('#goal-empty-title') ? document.querySelector('#goal-empty-title').textContent.trim() : ''
-  }));
-  ok('file:// 双击可启动', fileState.level === 'Lv.1 起步者', JSON.stringify(fileState));
+  ok('file:// 双击可启动', await filePage.evaluate(() => Boolean(document.querySelector('.sheet--cover'))));
   ok('file:// 下无脚本错误', fileErrors.length === 0, fileErrors.join(' | '));
 
   ok('流程中无浏览器运行时错误', errors.length === 0, errors.slice(0, 3).join(' | '));

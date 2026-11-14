@@ -45,9 +45,6 @@
     return selectedId;
   }
 
-  function currentView() {
-    return view;
-  }
 
   function tasksOf(goalId, tasks) {
     const all = tasks || Store.readTasks();
@@ -92,12 +89,6 @@
     if (LL.ui && typeof LL.ui.toast === 'function') LL.ui.toast(text, options);
   }
 
-  function ensureSelection(goals) {
-    const all = goals || Store.readGoals();
-    if (selectedId && all.some((goal) => goal.id === selectedId)) return;
-    const firstActive = all.filter((goal) => goal.status !== 'archived')[0];
-    selectedId = firstActive ? firstActive.id : null;
-  }
 
   /**
    * 新建目标。
@@ -105,7 +96,7 @@
    */
   function create(data) {
     const title = Util.clip(data && data.title, MAX_TITLE);
-    if (!title) return { ok: false, message: '目标名称不能为空。' };
+    if (!title) return { ok: false, message: '主任务名称不能为空。' };
 
     const goals = Store.readGoals();
     const duplicated = goals.some((goal) => goal.title === title);
@@ -131,10 +122,10 @@
   function update(id, data) {
     const goals = Store.readGoals();
     const goal = goals.find((item) => item.id === id);
-    if (!goal) return { ok: false, message: '目标不存在，可能已被删除。' };
+    if (!goal) return { ok: false, message: '主任务不存在，可能已被删除。' };
 
     const title = Util.clip(data && data.title, MAX_TITLE);
-    if (!title) return { ok: false, message: '目标名称不能为空。' };
+    if (!title) return { ok: false, message: '主任务名称不能为空。' };
 
     goal.title = title;
     goal.desc = Util.clip(data && data.desc, MAX_DESC);
@@ -152,7 +143,7 @@
     if (CONST.GOAL_STATUS.indexOf(status) < 0) return { ok: false };
     const goals = Store.readGoals();
     const goal = goals.find((item) => item.id === id);
-    if (!goal) return { ok: false, message: '目标不存在，可能已被删除。' };
+    if (!goal) return { ok: false, message: '主任务不存在，可能已被删除。' };
     const before = goal.status;
     goal.status = status;
     if (!Store.writeGoals(goals)) return { ok: false, message: '保存失败，请检查浏览器存储设置。' };
@@ -161,19 +152,19 @@
     if (status === 'done' && before !== 'done') {
       award = LL.Profile.awardGoal(goal.id);
       if (award.awarded) {
-        toast('目标完成，+' + award.amount + ' 经验。', { tone: 'ok' });
+        toast('主任务完成，+' + award.amount + ' 经验。', { tone: 'ok' });
       } else {
-        toast('目标完成。', { tone: 'ok' });
+        toast('主任务完成。', { tone: 'ok' });
       }
       if (award.leveledUp) {
         toast(LL.Profile.levelUpMessage(award.after), { tone: 'ok' });
       }
     } else if (status === 'active' && before === 'done') {
-      toast('目标已重新打开，已获得的经验不会收回。', { tone: 'warn' });
+      toast('主任务已重新打开，已获得的经验不会收回。', { tone: 'warn' });
     } else if (status === 'archived') {
-      toast('已归档，可在「已归档」里恢复。');
+      toast('已归档，可以在扉页的归档箱里找回。');
     } else if (status === 'active' && before === 'archived') {
-      toast('已恢复到进行中。', { tone: 'ok' });
+      toast('已回到记事本。', { tone: 'ok' });
     }
     return { ok: true, goal: goal, award: award };
   }
@@ -189,7 +180,7 @@
     if (!goal) return Promise.resolve({ ok: false });
     const count = tasksOf(id).length;
     const message =
-      '删除后不可恢复，该目标下的 ' + count + ' 个任务也会一起删除。';
+      '删除后不可恢复，该主任务下的 ' + count + ' 个子任务也会一起删除。';
 
     if (opts.purge && goal.status !== 'archived') {
       // 已归档目标是唯一允许「彻底删除」的对象；进行中的目标必须先归档
@@ -198,7 +189,7 @@
 
     return LL.ui
       .confirm({
-        title: '删除目标「' + Util.clip(goal.title, 18) + '」？',
+        title: '删除主任务「' + Util.clip(goal.title, 18) + '」？',
         message: message,
         okText: opts.purge ? '彻底删除' : '删除',
         danger: true
@@ -211,9 +202,8 @@
         const remaining = Store.readGoals().filter((item) => item.id !== id);
         Store.writeGoals(remaining);
         if (selectedId === id) selectedId = null;
-        ensureSelection(remaining);
         refresh();
-        toast('目标已删除。', { tone: 'ok' });
+        toast('主任务已删除。', { tone: 'ok' });
         return { ok: true, removedTasks: count };
       });
   }
@@ -223,10 +213,6 @@
     selectedId = id ? String(id) : null;
   }
 
-  function setView(next) {
-    if (next !== 'active' && next !== 'archived') return;
-    view = next;
-  }
 
   /* ------------------------- 目标弹窗 ------------------------- */
   function buildColorOptions() {
@@ -261,7 +247,7 @@
     buildColorOptions();
     const form = document.getElementById('goal-form');
     form.reset();
-    document.getElementById('goal-dialog-title').textContent = '新建目标';
+    document.getElementById('goal-dialog-title').textContent = '新建主任务';
     const color = form.querySelector('input[name="goal-color"][value="blue"]');
     if (color) color.checked = true;
     // 截止日期留空；默认给一个学期末的提示由 placeholder 承担
@@ -277,7 +263,7 @@
     buildColorOptions();
     const form = document.getElementById('goal-form');
     form.reset();
-    document.getElementById('goal-dialog-title').textContent = '编辑目标';
+    document.getElementById('goal-dialog-title').textContent = '编辑主任务';
     document.getElementById('goal-title').value = goal.title;
     document.getElementById('goal-desc').value = goal.desc || '';
     document.getElementById('goal-due').value = goal.due || '';
@@ -300,7 +286,7 @@
 
     const trimmed = Util.clip(data.title, MAX_TITLE);
     if (!trimmed) {
-      toast('目标名称不能为空。', { tone: 'error' });
+      toast('主任务名称不能为空。', { tone: 'error' });
       document.getElementById('goal-title').focus();
       return { ok: false };
     }
@@ -316,156 +302,9 @@
     const isNew = !editingId;
     editingId = null;
     refresh();
-    if (isNew) toast('目标已创建。', { tone: 'ok' });
-    else toast('目标已更新。', { tone: 'ok' });
+    if (isNew) toast('主任务已添加。', { tone: 'ok' });
+    else toast('主任务已更新。', { tone: 'ok' });
     return result;
-  }
-
-  /* ------------------------- 渲染 ------------------------- */
-  function dueHtml(goal) {
-    if (!goal.due) return '';
-    const overdue = Util.isPastDay(goal.due) && goal.status !== 'done';
-    return (
-      '<span class="due' +
-      (overdue ? ' is-overdue' : '') +
-      '">' +
-      (overdue ? '已逾期 · ' : '截止 ') +
-      Util.fmtDue(goal.due) +
-      '</span>'
-    );
-  }
-
-  function actionsHtml(goal) {
-    const buttons = [];
-    buttons.push(
-      '<button class="icon-btn" type="button" data-act="edit" title="编辑目标" aria-label="编辑目标">✎</button>'
-    );
-    if (goal.status === 'done') {
-      buttons.push(
-        '<button class="icon-btn" type="button" data-act="reopen" title="重新打开" aria-label="重新打开目标">↺</button>'
-      );
-    } else if (goal.status === 'active') {
-      buttons.push(
-        '<button class="icon-btn" type="button" data-act="done" title="标记完成" aria-label="标记目标完成">✓</button>'
-      );
-    }
-    if (goal.status === 'archived') {
-      buttons.push(
-        '<button class="icon-btn" type="button" data-act="unarchive" title="恢复" aria-label="恢复目标">⤴</button>'
-      );
-      buttons.push(
-        '<button class="icon-btn is-danger" type="button" data-act="purge" title="彻底删除" aria-label="彻底删除目标">✕</button>'
-      );
-    } else {
-      buttons.push(
-        '<button class="icon-btn" type="button" data-act="archive" title="归档" aria-label="归档目标">▤</button>'
-      );
-      buttons.push(
-        '<button class="icon-btn is-danger" type="button" data-act="delete" title="删除" aria-label="删除目标">✕</button>'
-      );
-    }
-    return '<div class="goal-card-actions">' + buttons.join('') + '</div>';
-  }
-
-  function cardHtml(goal, tasks) {
-    const info = progress(goal, tasks);
-    const classes = ['goal-card'];
-    if (goal.id === selectedId) classes.push('is-selected');
-    if (goal.status === 'done') classes.push('is-done');
-    if (goal.status === 'archived') classes.push('is-archived');
-
-    const tick = goal.status === 'done' ? '<span class="tick" aria-hidden="true">✓</span>' : '';
-    const desc = goal.desc ? '<p class="goal-desc">' + Util.esc(goal.desc) + '</p>' : '';
-    const badge =
-      goal.status === 'done'
-        ? '<span class="badge is-done">已完成</span>'
-        : goal.status === 'archived'
-          ? '<span class="badge is-archived">已归档</span>'
-          : '';
-    const taskCount = info.total === 0 ? '尚无任务' : info.total + ' 个任务';
-
-    return (
-      '<li class="' +
-      classes.join(' ') +
-      '" data-goal-id="' +
-      Util.esc(goal.id) +
-      '" data-color="' +
-      goal.color +
-      '" tabindex="0" role="button" aria-pressed="' +
-      (goal.id === selectedId ? 'true' : 'false') +
-      '" aria-label="' +
-      Util.esc(goal.title) +
-      (goal.status === 'done' ? '，已完成' : '') +
-      '">' +
-      '<div class="goal-card-head">' +
-      '<h3 class="goal-name">' +
-      tick +
-      Util.esc(goal.title) +
-      '</h3>' +
-      actionsHtml(goal) +
-      '</div>' +
-      desc +
-      '<div class="goal-meta">' +
-      dueHtml(goal) +
-      '<span>' +
-      taskCount +
-      '</span>' +
-      badge +
-      '</div>' +
-      '<div class="goal-progress">' +
-      '<div class="progress' +
-      (info.isEmpty ? ' is-empty' : '') +
-      '"><div class="progress-fill" data-tone="' +
-      (info.tone || 'low') +
-      '" style="width:' +
-      (info.isEmpty ? 0 : info.percent) +
-      '%"></div></div>' +
-      '<span class="goal-progress-text">' +
-      info.label +
-      '</span>' +
-      '</div>' +
-      '</li>'
-    );
-  }
-
-  function render() {
-    const goals = list();
-    const tasks = Store.readTasks();
-    ensureSelection(goals);
-
-    const visible = goals.filter((goal) => {
-      return view === 'archived' ? goal.status === 'archived' : goal.status !== 'archived';
-    });
-
-    const host = document.getElementById('goal-list');
-    if (host) {
-      host.innerHTML = visible.map((goal) => cardHtml(goal, tasks)).join('');
-    }
-
-    const emptyEl = document.getElementById('goal-empty');
-    const emptyTitle = document.getElementById('goal-empty-title');
-    const emptyButton = document.getElementById('btn-empty-new-goal');
-    if (emptyEl) emptyEl.hidden = visible.length > 0;
-    if (emptyTitle) {
-      emptyTitle.textContent =
-        visible.length > 0
-          ? ''
-          : goals.length === 0
-            ? EMPTY_GOALS
-            : view === 'archived'
-              ? EMPTY_ARCHIVED
-              : '进行中的目标都处理完了。新建一个，或者去「已归档」看看。';
-    }
-    if (emptyButton) {
-      emptyButton.textContent = view === 'archived' ? '新建目标' : '新建第一个目标';
-      emptyButton.hidden = view === 'archived';
-    }
-
-    document.querySelectorAll('.goal-tabs .tab').forEach((tab) => {
-      const isActive = tab.dataset.view === view;
-      tab.classList.toggle('is-active', isActive);
-      tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
   }
 
   LL.Goals = {
@@ -481,13 +320,10 @@
     setStatus,
     remove,
     select,
-    setView,
     selectedId: selectedIdValue,
-    currentView,
     openCreate,
     openEdit,
     submit,
-    render,
     refresh
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -184,91 +184,7 @@
     };
   }
 
-  /* ------------------------- 渲染 ------------------------- */
-  function render(options) {
-    const opts = options || {};
-    const profile = get();
-    const level = profile.level;
-    const floor = totalFor(level);
-    const ceiling = totalFor(level + 1);
-    const span = ceiling - floor;
-    const inLevel = profile.exp - floor;
-    const percent = span > 0 ? Math.round(Util.clamp((inLevel / span) * 100, 0, 100)) : 100;
-
-    const nameEl = document.getElementById('level-name');
-    const expEl = document.getElementById('level-exp');
-    const trackEl = document.getElementById('exp-track');
-    const fillEl = document.getElementById('exp-fill');
-
-    if (nameEl) nameEl.textContent = 'Lv.' + level + ' ' + titleFor(level);
-    if (expEl) expEl.textContent = inLevel + ' / ' + span + ' 经验';
-    if (fillEl) fillEl.style.width = percent + '%';
-    if (trackEl) {
-      trackEl.setAttribute('aria-valuenow', String(percent));
-      trackEl.setAttribute('aria-valuemax', '100');
-      trackEl.setAttribute('title', '累计 ' + profile.exp + ' 经验，距离下一级还差 ' + (ceiling - profile.exp) + ' 点');
-    }
-
-    if (opts.leveledUp && expEl) {
-      expEl.classList.remove('is-flash');
-      // 强制重排，让动画可以连续触发
-      void expEl.offsetWidth;
-      expEl.classList.add('is-flash');
-    }
-
-    const button = document.getElementById('btn-checkin');
-    const label = document.getElementById('checkin-label');
-    if (button && label) {
-      const done = todayCheckedIn();
-      button.classList.toggle('is-done', done);
-      label.textContent = done ? '今日已打卡' : '今日打卡';
-      button.setAttribute('aria-pressed', done ? 'true' : 'false');
-    }
-
-    renderHeatmap();
-  }
-
-  /** 最近八周打卡热力图：每列一周，周一在上 */
-  function renderHeatmap() {
-    const host = document.getElementById('heatmap');
-    if (!host) return;
-
-    const checkins = Store.readCheckins();
-    const today = Util.todayStr();
-    const DAY_MS = 24 * 60 * 60 * 1000;
-    const thisMonday = Util.startOfWeek(new Date());
-    const start = new Date(thisMonday.getTime() - 7 * 7 * DAY_MS);
-    const cells = [];
-
-    for (let week = 0; week < 8; week += 1) {
-      for (let day = 0; day < 7; day += 1) {
-        const date = new Date(start.getTime() + (week * 7 + day) * DAY_MS);
-        const key = Util.toDateStr(date);
-        const on = Boolean(checkins[key]);
-        const classes = ['heat-cell'];
-        if (key === today) classes.push('is-today');
-        if (key > today) classes.push('is-future');
-        if (on) classes.push('is-on');
-        cells.push(
-          '<span class="' +
-            classes.join(' ') +
-            '" title="' +
-            key +
-            (on ? ' 已打卡' : ' 未打卡') +
-            '"></span>'
-        );
-      }
-    }
-
-    host.innerHTML = cells.join('');
-    const total = Object.keys(checkins).length;
-    host.setAttribute('aria-label', '最近八周打卡热力图，累计打卡 ' + total + ' 天');
-  }
-
-  /**
-   * 升级提示文案，避免调用方各自拼字符串。
-   * @param {number} level 新等级
-   */
+  /** 升级提示文案，避免调用方各自拼字符串。 */
   function levelUpMessage(level) {
     return '升到 ' + level + ' 级了：' + titleFor(level) + '。';
   }
@@ -289,8 +205,6 @@
     currentStreak,
     todayCheckedIn,
     checkin,
-    render,
-    renderHeatmap,
     levelUpMessage
   };
 })(typeof window !== 'undefined' ? window : globalThis);

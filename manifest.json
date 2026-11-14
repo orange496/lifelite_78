@@ -1,7 +1,7 @@
 {
-  "name": "LifeLite 学习目标看板",
+  "name": "LifeLite 学习目标记事本",
   "short_name": "LifeLite",
-  "description": "把一个学期的长期目标拆成能完成的小任务，每天打卡，坚持看得见。",
+  "description": "橙色封面的翻页记事本：主任务逐行写下，子任务缩进跟随，每天翻一页。",
   "lang": "zh-CN",
   "dir": "ltr",
   "id": "./",
@@ -10,8 +10,8 @@
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
-  "background_color": "#f2f5f9",
-  "theme_color": "#2f6fed",
+  "background_color": "#2a1d14",
+  "theme_color": "#c86a22",
   "categories": ["productivity", "education"],
   "icons": [
     {
@@ -34,3 +34,4 @@
     }
   ]
 }
+
