@@ -28,8 +28,6 @@
 
 项目维护者有权删除、编辑或拒绝不符合本准则的评论、提交、代码与 Issue，并会在必要时说明理由。
 
-如果你遭遇或目睹了不可接受的行为，请通过 `maintainer@example.com` 联系维护者（提交前请替换为有效邮箱）。所有投诉都会被及时、公正地审阅与处理，并尽可能为举报者保密。
-
 ## 归属
 
 本准则参考 [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) 编写，适用于本课程项目。
