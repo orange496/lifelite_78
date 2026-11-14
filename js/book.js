@@ -442,6 +442,92 @@
     );
   }
 
+
+  /* ------------------------- 目录 ------------------------- */
+  function pageLabelFor(index) {
+    if (index === 0) return '封面';
+    if (index === 1) return '扉页';
+    return '第 ' + (index - 1) + ' 页';
+  }
+
+  function pageSummary(page) {
+    if (page.kind === 'cover') return '橙色封面 · 导入 / 导出';
+    if (page.kind === 'front') return '经验、等级、打卡与升级奖励';
+    const goals = page.rows.filter((row) => row.kind === 'goal');
+    if (state.mode === 'archived') return '归档箱 · ' + goals.length + ' 个主任务';
+    const titles = goals.map((row) => row.goal.title);
+    if (titles.length === 0) return '空白页';
+    const head = titles.slice(0, 2).join('、');
+    return titles.length > 2 ? head + ' 等 ' + titles.length + ' 个主任务' : head;
+  }
+
+  function tocHtml() {
+    const items = pages
+      .map((page, index) => {
+        const active = index === state.page ? ' is-active' : '';
+        const badge = index === state.page ? '<span class="toc-badge">当前</span>' : '';
+        return (
+          '<button class="toc-item' +
+          active +
+          '" type="button" role="menuitem" data-page="' +
+          index +
+          '">' +
+          '<span class="toc-page">' +
+          pageLabelFor(index) +
+          '</span>' +
+          '<span class="toc-desc">' +
+          Util.esc(pageSummary(page)) +
+          '</span>' +
+          badge +
+          '</button>'
+        );
+      })
+      .join('');
+    return (
+      '<div class="toc-head">目录 <small>共 ' + pages.length + ' 页</small></div>' +
+      '<div class="toc-list">' + items + '</div>'
+    );
+  }
+
+  function positionToc(menu, indicator) {
+    const rect = indicator.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    let left = rect.left + rect.width / 2 - menuRect.width / 2;
+    left = Math.max(10, Math.min(global.innerWidth - menuRect.width - 10, left));
+    menu.style.left = Math.round(left) + 'px';
+    menu.style.bottom = Math.round(global.innerHeight - rect.top + 10) + 'px';
+    menu.style.top = 'auto';
+  }
+
+  function openToc() {
+    const menu = byId('toc-menu');
+    const indicator = byId('page-indicator');
+    if (!menu || !indicator) return;
+    rebuildPages();
+    menu.innerHTML = tocHtml();
+    menu.hidden = false;
+    indicator.setAttribute('aria-expanded', 'true');
+    positionToc(menu, indicator);
+    const active = menu.querySelector('.toc-item.is-active');
+    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+  }
+
+  function closeToc() {
+    const menu = byId('toc-menu');
+    const indicator = byId('page-indicator');
+    if (menu) {
+      menu.hidden = true;
+      menu.innerHTML = '';
+    }
+    if (indicator) indicator.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleToc() {
+    const menu = byId('toc-menu');
+    if (menu && !menu.hidden) closeToc();
+    else openToc();
+  }
+
   /* =========================================================================
    * 三、渲染
    * ========================================================================= */
@@ -492,6 +578,7 @@
   }
 
   function goTo(index) {
+    closeToc();
     const target = Math.max(0, Math.min(pages.length - 1, index));
     if (target === state.page || state.busy) return;
 
@@ -758,6 +845,9 @@
     if (!event.target.closest('#line-menu') && !event.target.closest('[data-act="menu"]')) {
       closeMenu();
     }
+    if (!event.target.closest('#toc-menu') && !event.target.closest('#page-indicator')) {
+      closeToc();
+    }
   }
 
   function bind() {
@@ -781,6 +871,16 @@
       if (event.defaultPrevented) return;
       if (document.querySelector('dialog[open]')) return;
       if (event.target.closest('input, textarea, select')) return;
+      if (event.key === 'Escape') {
+        const menu = byId('toc-menu');
+        if (menu && !menu.hidden) {
+          event.preventDefault();
+          closeToc();
+          const indicator = byId('page-indicator');
+          if (indicator) indicator.focus();
+        }
+        return;
+      }
       if (event.key === 'ArrowRight' || event.key === 'PageDown') {
         event.preventDefault();
         next();
@@ -796,6 +896,25 @@
     const nextBtn = byId('btn-next');
     if (prevBtn) prevBtn.addEventListener('click', prev);
     if (nextBtn) nextBtn.addEventListener('click', next);
+
+    const indicator = byId('page-indicator');
+    if (indicator) {
+      indicator.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleToc();
+      });
+    }
+
+    const toc = byId('toc-menu');
+    if (toc) {
+      toc.addEventListener('click', (event) => {
+        const item = event.target.closest('[data-page]');
+        if (!item) return;
+        const index = Number(item.dataset.page);
+        closeToc();
+        goTo(index);
+      });
+    }
   }
 
   /* =========================================================================

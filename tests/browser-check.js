@@ -148,9 +148,27 @@ function findChrome() {
   ok('封面已渲染', Boolean(await page.$('.sheet--cover')));
   await page.screenshot({ path: path.join(SHOTS, 'notebook-cover.png') });
 
-  // 2. 扉页
-  await page.click('#btn-next');
+  // 2. 目录：点页码展开、跳转扉页
+  await page.click('#page-indicator');
+  await new Promise((r) => setTimeout(r, 250));
+  const toc = await page.evaluate(() => ({
+    open: !document.getElementById('toc-menu').hidden,
+    items: document.querySelectorAll('.toc-item').length,
+    active: document.querySelector('.toc-item.is-active')
+      ? document.querySelector('.toc-item.is-active').textContent.trim()
+      : '',
+    expanded: document.getElementById('page-indicator').getAttribute('aria-expanded')
+  }));
+  ok('点击页码展开目录', toc.open && toc.expanded === 'true', JSON.stringify(toc));
+  ok('目录列出封面/扉页/任务页', toc.items === 3, String(toc.items));
+  ok('目录高亮当前页', toc.active.indexOf('封面') >= 0, toc.active);
+  await page.screenshot({ path: path.join(SHOTS, 'notebook-toc.png') });
+
+  await page.click('.toc-item[data-page="1"]');
   await new Promise((r) => setTimeout(r, 900));
+  ok('点目录跳转到扉页', await page.evaluate(() => Boolean(document.querySelector('.front-level'))));
+  ok('跳转后目录收起', await page.evaluate(() => document.getElementById('toc-menu').hidden));
+
   const front = await page.evaluate(() => ({
     level: document.querySelector('.front-level') ? document.querySelector('.front-level').textContent.trim() : '',
     reward: Boolean(document.querySelector('.reward-placeholder')),
