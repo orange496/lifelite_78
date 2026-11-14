@@ -5,7 +5,7 @@
 
 纯前端、零依赖、零构建，**双击 `index.html` 就能用**。
 
-- 项目地址：`https://github.com/yourname/lifelite_78`（把 `yourname` 换成你的 GitHub 用户名）
+- 项目地址：`https://github.com/orange496/lifelite_78`
 - 许可证：[MIT](LICENSE)
 - 版本：[v1.0.0](CHANGELOG.md)
 
