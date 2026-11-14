@@ -269,6 +269,34 @@ a {
   opacity: 0.8;
 }
 
+.foot-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.foot-add {
+  padding: 4px 10px;
+  border: 1px dashed rgba(120, 90, 50, 0.5);
+  border-radius: 3px;
+  background: rgba(255, 250, 235, 0.45);
+  font-family: var(--font-hand);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #a9540f;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.foot-add:hover {
+  background: rgba(200, 106, 34, 0.12);
+  border-color: #c86a22;
+}
+
+.foot-add:active {
+  transform: translateY(1px);
+}
+
 /* 14 行固定行距 */
 .sheet-body {
   position: relative;

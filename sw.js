@@ -16,7 +16,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'lifelite-v3';
+const CACHE_VERSION = 'lifelite-v4';
 const CACHE_NAME = CACHE_VERSION;
 
 /* 应用外壳：只要这些文件在，断网也能完整使用 */

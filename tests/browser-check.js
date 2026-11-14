@@ -191,6 +191,19 @@ function findChrome() {
   ok('默认收起子任务', collapsed.subs === 0);
   await page.screenshot({ path: path.join(SHOTS, 'notebook-tasks.png') });
 
+  // 3.5 页脚入口：加完一条还能继续加
+  ok('任务页页脚有新增入口', Boolean(await page.$('.foot-add')));
+  await page.click('.foot-add');
+  await new Promise((r) => setTimeout(r, 300));
+  ok('页脚入口能再次打开新建对话框', await page.evaluate(() => document.getElementById('goal-dialog').open));
+  await page.type('#goal-title', '再写一条主任务');
+  await page.evaluate(() => {
+    document.getElementById('goal-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  });
+  await new Promise((r) => setTimeout(r, 500));
+  ok('添加后纸上出现新主任务', await page.evaluate(() => document.body.innerText.indexOf('再写一条主任务') >= 0));
+  ok('添加后主任务数量增加', (await page.evaluate(() => document.querySelectorAll('.line--goal').length)) >= 4);
+
   await page.click('.line--goal[data-goal-id="g_1"]');
   await new Promise((r) => setTimeout(r, 350));
   const expanded = await page.evaluate(() => ({

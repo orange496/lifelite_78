@@ -434,7 +434,12 @@
       '<span>' +
       (currentPageLabel().short || '') +
       '</span>' +
-      '<span class="foot-hint">点主任务展开子任务 · 子任务缩进两格</span>' +
+      '<span class="foot-center">' +
+      (state.mode === 'archived'
+        ? ''
+        : '<button class="foot-add" type="button" data-act="new-goal">＋ 新主任务</button>') +
+      '<span class="foot-hint">点主任务展开子任务</span>' +
+      '</span>' +
       '<span>' +
       (state.mode === 'archived' ? '归档箱' : 'LifeLite') +
       '</span>' +
