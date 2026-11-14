@@ -16,25 +16,25 @@
 
 'use strict';
 
-const CACHE_VERSION = 'lifelite-v4';
+const CACHE_VERSION = 'lifelite-v5';
 const CACHE_NAME = CACHE_VERSION;
 
 /* 应用外壳：只要这些文件在，断网也能完整使用 */
 const APP_SHELL = [
   './',
-  './index.html',
-  './css/style.css',
-  './js/storage.js',
-  './js/profile.js',
-  './js/goals.js',
-  './js/tasks.js',
-  './js/stats.js',
-  './js/book.js',
-  './js/app.js',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-512-maskable.png'
+  './index.html?v=5',
+  './css/style.css?v=5',
+  './js/storage.js?v=5',
+  './js/profile.js?v=5',
+  './js/goals.js?v=5',
+  './js/tasks.js?v=5',
+  './js/stats.js?v=5',
+  './js/book.js?v=5',
+  './js/app.js?v=5',
+  './manifest.json?v=5',
+  './icons/icon-192.png?v=5',
+  './icons/icon-512.png?v=5',
+  './icons/icon-512-maskable.png?v=5'
 ];
 
 /* 安装：预缓存外壳；任何一个文件抓取失败就整体失败，避免留下半套缓存 */

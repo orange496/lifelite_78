@@ -85,14 +85,15 @@ html.replace(/(?:src|href)="([^"#]+)"/g, (match, url) => {
   return match;
 });
 assetRefs.forEach((url) => {
-  if (!exists(url)) fail('index.html 引用的资源不存在：' + url);
+  const clean = url.split('?')[0];
+  if (!exists(clean)) fail('index.html 引用的资源不存在：' + url);
 });
 notes.push('index.html 引用 ' + assetRefs.length + ' 个本地资源');
 
 /* ------------------------- 5. 脚本顺序 ------------------------- */
 const scriptOrder = [];
 html.replace(/<script\s+src="([^"]+)"/g, (match, src) => {
-  scriptOrder.push(src);
+  scriptOrder.push(src.split('?')[0]);
   return match;
 });
 const expectedOrder = [
@@ -135,7 +136,7 @@ if (!shellBlock) {
   });
   listed.forEach((item) => {
     if (item === './') return;
-    const rel = item.replace(/^\.\//, '');
+    const rel = item.replace(/^\.\//, '').split('?')[0];
     if (!exists(rel)) fail('APP_SHELL 里列出的文件不存在：' + item);
   });
   // 页面引用的静态资源都应进缓存清单，避免「断网打开少文件」
