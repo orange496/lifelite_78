@@ -113,7 +113,7 @@ lifelite/
 
 ## 浏览器支持
 
-Chrome / Edge / Firefox / Safari 最近两个大版本。依赖 `<dialog>`、CSS Grid、`localStorage` 与 Service Worker（`file://` 下自动跳过 SW）。
+Chrome / Edge / Firefox / Safari 最近两个大版本。依赖 `<dialog>`、CSS Grid、`localStorage` 与 Service Worker。
 
 ## 贡献
 
