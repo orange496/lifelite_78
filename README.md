@@ -5,7 +5,7 @@
 
 纯前端、零依赖、零构建，**双击 `index.html` 就能用**。
 
-- 项目地址：`https://github.com/yourname/lifelite_XX`（提交前替换为实际用户名与学号后两位）
+- 项目地址：`https://github.com/yourname/lifelite_78`（把 `yourname` 换成你的 GitHub 用户名）
 - 许可证：[MIT](LICENSE)
 - 版本：[v1.0.0](CHANGELOG.md)
 
@@ -43,10 +43,10 @@ python -m http.server 8080
 
 ## 部署到 GitHub Pages
 
-1. 在 GitHub 新建仓库，仓库名为 `lifelite_` 加学号后两位；
+1. 在 GitHub 新建仓库，仓库名为 `lifelite_78`；
 2. 推送 `main` 分支；
 3. 打开仓库 **Settings → Pages**，Source 选 `Deploy from a branch`，分支 `main`、目录 `/ (root)`；
-4. 访问 `https://<用户名>.github.io/lifelite_XX/`。
+4. 访问 `https://<用户名>.github.io/lifelite_78/`。
 
 零构建，推送即上线。部署后可通过浏览器菜单「安装应用」装到桌面。
 

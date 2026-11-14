@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 先读 README
-    url: https://github.com/yourname/lifelite_XX#readme
+    url: https://github.com/yourname/lifelite_78#readme
     about: 安装、部署、快捷键、已知问题都在 README 里；提问前请先看一遍。
   - name: 想法与讨论
-    url: https://github.com/yourname/lifelite_XX/discussions
+    url: https://github.com/yourname/lifelite_78/discussions
     about: 不确定是不是 bug、想聊功能方向，请到 Discussions，不要开 Issue。
